@@ -17,6 +17,11 @@ class FirebaseConnection:
     def initialize(cls):
         """Initialize Firebase connection"""
         if cls._app is None:
+            # Check if credentials are provided
+            if not settings.google_application_credentials:
+                logger.warning("No Firebase credentials provided - running in mock mode")
+                return None
+                
             try:
                 # Initialize Firebase Admin SDK
                 cred = credentials.Certificate(settings.google_application_credentials)
@@ -31,7 +36,8 @@ class FirebaseConnection:
 
             except Exception as e:
                 logger.error(f"Failed to initialize Firebase: {e}")
-                raise
+                logger.warning("Firebase initialization failed - consider using mock mode")
+                return None
 
     @classmethod
     def get_db(cls) -> Client:

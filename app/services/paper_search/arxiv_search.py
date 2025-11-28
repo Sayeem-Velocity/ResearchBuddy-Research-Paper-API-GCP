@@ -1,6 +1,7 @@
 # app/services/paper_search/arxiv_search.py
 import arxiv
 import logging
+import random
 from typing import List, Dict, Optional
 from datetime import datetime
 import asyncio
@@ -52,6 +53,7 @@ class ArxivSearcher:
         papers = []
         for result in self.client.results(search):
             try:
+                
                 # Check date filter if provided
                 if date_range:
                     paper_date = result.published.date()
@@ -71,7 +73,8 @@ class ArxivSearcher:
                     doi=None,  # arXiv doesn't have DOIs
                     citation_count=None,  # Not available from arXiv API
                     venue="arXiv",
-                    keywords=result.categories
+                    keywords=result.categories,
+                    is_open_access=True  # arXiv is always open access
                 )
 
                 papers.append(paper)

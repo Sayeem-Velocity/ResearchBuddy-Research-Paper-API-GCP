@@ -80,6 +80,8 @@ class SearchStatusResponse(BaseModel):
     """Response for search status check"""
     session_id: str = Field(..., description="Session identifier")
     status: SearchStatus = Field(..., description="Current status")
+    query: str = Field(..., description="Search query")
+    sources: List[PaperSource] = Field(..., description="Sources being searched")
     progress: Optional[Dict[str, Any]] = Field(None, description="Progress information")
     results_count: int = Field(default=0, description="Number of results found")
     error_message: Optional[str] = Field(None, description="Error message if failed")

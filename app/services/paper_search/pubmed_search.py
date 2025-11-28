@@ -1,6 +1,7 @@
 # app/services/paper_search/pubmed_search.py
 import asyncio
 import logging
+import random
 import aiohttp
 import xml.etree.ElementTree as ET
 from typing import List, Dict, Optional
@@ -39,9 +40,13 @@ class PubMedSearcher:
 
     async def _search_pmids(self, query: str, max_results: int, date_range: Optional[Dict] = None) -> List[str]:
         """Search for PubMed IDs (PMIDs)"""
+        # Add random offset for variety in repeated searches
+        random_offset = random.randint(0, 15)
+        
         params = {
             "db": "pubmed",
             "term": query,
+            "retstart": random_offset,
             "retmax": max_results,
             "retmode": "json",
             "sort": "relevance",
@@ -105,10 +110,15 @@ class PubMedSearcher:
 
         try:
             async with aiohttp.ClientSession() as session:
+                # Fetch paper details
                 async with session.get(self.fetch_url, params=params) as response:
                     if response.status == 200:
                         xml_content = await response.text()
-                        return self._parse_pubmed_xml(xml_content)
+                        papers = self._parse_pubmed_xml(xml_content)
+                        
+                        # Check for PMC full-text availability
+                        await self._check_pmc_availability(papers, pmids, session)
+                        return papers
                     else:
                         logger.error(f"PubMed fetch failed with status: {response.status}")
                         return []
@@ -116,6 +126,55 @@ class PubMedSearcher:
         except Exception as e:
             logger.error(f"Error fetching PubMed details: {e}")
             return []
+    
+    async def _check_pmc_availability(self, papers: List[Paper], pmids: List[str], session: aiohttp.ClientSession):
+        """Check PubMed Central availability for full-text PDFs"""
+        try:
+            # Use PubMed elink to find PMC IDs
+            pmid_string = ",".join(pmids)
+            params = {
+                "dbfrom": "pubmed",
+                "db": "pmc",
+                "linkname": "pubmed_pmc",
+                "id": pmid_string,
+                "retmode": "json",
+                "tool": "research_paper_api",
+                "email": "research@example.com"
+            }
+            
+            elink_url = f"{self.base_url}elink.fcgi"
+            async with session.get(elink_url, params=params) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Map PMIDs to PMC IDs
+                    pmid_to_pmcid = {}
+                    linksets = data.get("linksets", [])
+                    for linkset in linksets:
+                        pmid = linkset.get("ids", [""])[0]
+                        linksetdbs = linkset.get("linksetdbs", [])
+                        for linksetdb in linksetdbs:
+                            if linksetdb.get("linkname") == "pubmed_pmc":
+                                links = linksetdb.get("links", [])
+                                if links:
+                                    pmid_to_pmcid[pmid] = links[0]
+                    
+                    # Update papers with PMC PDF URLs
+                    for paper in papers:
+                        pmid = paper.id.replace("pubmed_", "")
+                        if pmid in pmid_to_pmcid:
+                            pmcid = pmid_to_pmcid[pmid]
+                            paper.pdf_url = f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmcid}/pdf/"
+                            paper.is_open_access = True
+                            logger.info(f"Found PMC full-text for PMID {pmid}: PMC{pmcid}")
+                        else:
+                            # No free full-text available
+                            paper.pdf_url = None
+                            paper.is_open_access = False
+                            logger.debug(f"No PMC full-text for PMID {pmid}")
+                            
+        except Exception as e:
+            logger.warning(f"Error checking PMC availability: {e}")
 
     def _parse_pubmed_xml(self, xml_content: str) -> List[Paper]:
         """Parse PubMed XML response into Paper objects"""
@@ -193,11 +252,8 @@ class PubMedSearcher:
             journal_elem = article_element.find(".//Journal/Title")
             venue = journal_elem.text if journal_elem is not None else ""
 
-            # Construct PDF URL (PubMed Central if available)
+            # PDF URL will be populated by _check_pmc_availability
             pdf_url = None
-            if pmid:
-                # Try to construct PMC URL (not all papers have free PDFs)
-                pdf_url = f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmid}/pdf/"
 
             # Extract keywords/MeSH terms
             keywords = []
@@ -217,7 +273,8 @@ class PubMedSearcher:
                 doi=doi,
                 citation_count=None,  # PubMed doesn't provide citation counts
                 venue=venue,
-                keywords=keywords
+                keywords=keywords,
+                is_open_access=False  # Will be updated by _check_pmc_availability
             )
 
         except Exception as e:

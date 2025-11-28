@@ -71,6 +71,7 @@ class MockFirestoreSessionManager:
         """Create a new research session"""
         try:
             session_id = str(uuid.uuid4())
+            logger.info(f"Creating session {session_id} for user {user_id}")
 
             # Convert enum sources to strings
             sources_list = []
@@ -98,21 +99,25 @@ class MockFirestoreSessionManager:
             }
 
             # Load existing sessions
+            logger.info(f"Loading sessions from {self.sessions_file}")
             sessions_data = self._load_json(self.sessions_file)
+            logger.info(f"Loaded {len(sessions_data)} users from file")
 
             # Store session
             if user_id not in sessions_data:
                 sessions_data[user_id] = {}
             sessions_data[user_id][session_id] = session_data
+            logger.info(f"Added session to user {user_id}, total sessions: {len(sessions_data[user_id])}")
 
             # Save to file
+            logger.info(f"Saving sessions to {self.sessions_file}")
             self._save_json(self.sessions_file, sessions_data)
+            logger.info(f"✅ Successfully saved session {session_id} for user {user_id}")
 
-            logger.info(f"Created mock session {session_id} for user {user_id}")
             return session_id
 
         except Exception as e:
-            logger.error(f"Error creating mock session: {e}")
+            logger.error(f"Error creating mock session: {e}", exc_info=True)
             raise
 
     async def update_session_status(

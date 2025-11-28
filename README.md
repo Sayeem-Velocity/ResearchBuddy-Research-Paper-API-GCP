@@ -1,446 +1,261 @@
-# Research Paper API 🔬
+# ResearchBuddy - AI-Powered Research Paper Search & Analysis 🔬
 
-An AI-powered research paper analysis API that aggregates papers from multiple sources and provides intelligent analysis using Google's Gemini AI.
+A full-stack web application for searching academic papers across multiple databases (arXiv, PubMed, Google Scholar) with AI-powered chat capabilities powered by Google's Gemini AI.
 
-## 🚀 Features
+## ✨ Features
 
-- **Multi-Source Paper Search**: arXiv, PubMed, Google Scholar
-- **AI-Powered Analysis**: Comprehensive paper analysis using Gemini 2.0
-- **Research Gap Identification**: Cross-paper analysis to identify research opportunities
-- **Research Scope Planning**: AI-generated research proposals with timelines
-- **PDF Report Generation**: Professional reports combining all analyses
-- **Rate Limiting**: Respectful API usage with Google Scholar daily limits
+- **Multi-Source Paper Search**: Search across arXiv, PubMed, and Google Scholar simultaneously
+- **AI Chat Integration**: Ask questions about papers and get intelligent responses using Gemini AI
+- **Bookmark System**: Save and organize papers with categories and notes
+- **Modern React UI**: Clean, responsive interface with smooth animations
+- **Real-time Results**: Fast parallel search across multiple academic databases
 
-## 📊 API Endpoints
+## 🏗️ Tech Stack
 
-### Base URL
-```
-http://localhost:8004
-```
+**Backend:**
+- FastAPI (Python web framework)
+- Google Vertex AI (Gemini 2.0 for AI chat)
+- Firebase/Firestore (optional - currently using local storage)
+- Multiple academic APIs (arXiv, PubMed, Google Scholar)
 
-### 🔍 Search & Analysis Endpoints
+**Frontend:**
+- React 18 with Vite
+- TailwindCSS for styling
+- Framer Motion for animations
+- Lucide React for icons
+- LocalStorage for bookmarks
 
-#### 1. Analyze Papers with AI
-**POST** `/analyze/papers-with-ai`
+## 📋 Prerequisites
 
-Searches for papers and provides comprehensive AI analysis.
+- Python 3.8+
+- Node.js 16+ and npm
+- Google Cloud account (for Gemini AI)
+- Git
 
-```json
-{
-  "query": "machine learning",
-  "max_papers": 5,
-  "sources": ["arxiv", "pubmed", "google_scholar"]
-}
-```
+## 🚀 Installation & Setup
 
-**Response:**
-```json
-{
-  "query": "machine learning",
-  "papers_found": 5,
-  "analyses_generated": 5,
-  "results": [
-    {
-      "paper": {
-        "id": "http://arxiv.org/abs/2208.00733v1",
-        "title": "The Rise of Quantum Internet Computing",
-        "authors": ["Seng W. Loke"],
-        "abstract": "This article highlights...",
-        "published": "2022-08-01T10:36:13+00:00",
-        "source": "arxiv",
-        "venue": "arXiv",
-        "citation_count": null
-      },
-      "analysis": {
-        "summary": "This paper introduces the concept of quantum Internet computing...",
-        "key_contributions": ["Defines quantum Internet computing...", "..."],
-        "strengths": ["Provides clear definition...", "..."],
-        "weaknesses": ["High-level overview without technical details...", "..."],
-        "research_gaps": ["Specific quantum protocols need exploration...", "..."],
-        "future_scope": ["Development of quantum protocols...", "..."],
-        "methodology": "Conceptual overview based on literature review",
-        "main_findings": ["Quantum Internet computing is distinct field...", "..."],
-        "generated_at": "2025-09-17T00:40:51.942170"
-      }
-    }
-  ]
-}
-```
+### 1. Clone the Repository
 
-#### 2. Research Gaps Analysis
-**POST** `/analyze/research-gaps`
-
-Identifies research gaps across multiple papers in a domain.
-
-```json
-{
-  "query": "deep learning",
-  "research_domain": "artificial intelligence",
-  "max_papers": 10,
-  "sources": ["arxiv", "pubmed"]
-}
-```
-
-**Response:**
-```json
-{
-  "query": "deep learning",
-  "research_domain": "artificial intelligence",
-  "papers_analyzed": 10,
-  "research_gaps": {
-    "domain": "artificial intelligence",
-    "current_trends": ["Optimization techniques...", "Medical applications...", "..."],
-    "research_gaps": [
-      {
-        "gap": "Theoretical understanding of optimization landscapes",
-        "description": "While optimization algorithms are widely used...",
-        "importance": "high"
-      }
-    ],
-    "methodology_gaps": ["Rigorous benchmarking...", "..."],
-    "future_opportunities": [
-      {
-        "opportunity": "Development of AutoML tools for medical applications",
-        "description": "AutoML tools can automate the process...",
-        "feasibility": "medium"
-      }
-    ],
-    "cross_domain_connections": ["Statistics", "Control Theory", "..."],
-    "recommendations": ["Focus on robust, explainable models...", "..."]
-  }
-}
-```
-
-#### 3. Research Scope Generation
-**POST** `/analyze/research-scope`
-
-Generates a comprehensive research plan based on papers and research question.
-
-```json
-{
-  "query": "neural networks",
-  "research_question": "How can we improve the interpretability of neural networks in medical diagnosis?",
-  "timeline_months": 18,
-  "max_papers": 8,
-  "sources": ["arxiv", "pubmed"]
-}
-```
-
-**Response:**
-```json
-{
-  "query": "neural networks",
-  "research_question": "How can we improve the interpretability of neural networks in medical diagnosis?",
-  "timeline_months": 18,
-  "research_scope": {
-    "research_question": "How can we improve...",
-    "timeline_months": 18,
-    "research_objectives": [
-      {
-        "objective": "Develop explainable AI techniques",
-        "description": "Create methods to make neural network decisions transparent",
-        "priority": "high"
-      }
-    ],
-    "methodology": {
-      "approach": "Mixed-methods approach combining quantitative analysis...",
-      "data_collection": ["Medical imaging datasets", "Clinical data", "..."],
-      "analysis_methods": ["Statistical analysis", "Deep learning", "..."],
-      "tools_required": ["Python", "TensorFlow", "..."]
-    },
-    "phases": [
-      {
-        "phase": "Phase 1: Literature Review",
-        "duration_months": 3,
-        "activities": ["Comprehensive literature review", "..."],
-        "deliverables": ["Literature review report", "..."]
-      }
-    ],
-    "expected_challenges": [
-      {
-        "challenge": "Data privacy concerns",
-        "mitigation": "Use federated learning approaches",
-        "risk_level": "medium"
-      }
-    ],
-    "resources_needed": {
-      "personnel": ["PhD researcher", "Medical expert", "..."],
-      "equipment": ["GPU clusters", "Medical imaging equipment", "..."],
-      "software": ["Deep learning frameworks", "..."],
-      "estimated_budget": "$150,000 - $200,000"
-    },
-    "success_metrics": ["Improved model interpretability scores", "..."],
-    "potential_outcomes": ["Novel interpretability framework", "..."]
-  }
-}
-```
-
-#### 4. Generate Comprehensive Report
-**POST** `/generate/comprehensive-report`
-
-Generates a professional PDF report combining all analyses.
-
-```json
-{
-  "query": "quantum computing",
-  "research_domain": "computer science",
-  "research_question": "What are the applications of quantum computing in cryptography?",
-  "timeline_months": 12,
-  "max_papers": 5,
-  "sources": ["arxiv"],
-  "report_title": "Quantum Computing in Cryptography: Research Analysis"
-}
-```
-
-**Response:** PDF file download
-
-### 📄 Basic Search Endpoints
-
-#### Search Papers
-**POST** `/search`
-
-Basic paper search without AI analysis.
-
-```json
-{
-  "query": "machine learning",
-  "sources": ["arxiv", "pubmed"],
-  "max_results": 20,
-  "generate_analysis": false,
-  "sort_by": "recent",
-  "date_range": {
-    "start_year": 2020,
-    "end_year": 2024
-  }
-}
-```
-
-#### Get Search Status
-**GET** `/search/status/{session_id}`
-
-Check the status of a search session.
-
-#### Get Search Results
-**GET** `/search/results/{session_id}`
-
-Retrieve results from a completed search session.
-
-#### Get User Sessions
-**GET** `/sessions?limit=20&status_filter=completed`
-
-List user's search sessions.
-
-#### Delete Session
-**DELETE** `/sessions/{session_id}`
-
-Delete a search session and its data.
-
-## 🛠️ Technical Details
-
-### Models Used
-- **Primary**: Gemini 2.0 Flash Experimental
-- **Provider**: Google Vertex AI
-- **Region**: us-central1
-
-### Rate Limits
-- **Google Scholar**: 1 search per user per day
-- **arXiv**: No limits (free)
-- **PubMed**: No limits (free)
-- **Vertex AI**: Based on your Google Cloud quotas
-
-### Response Times
-- **Basic Search**: 2-5 seconds
-- **AI Analysis**: 15-30 seconds per paper
-- **Research Gaps**: 20-40 seconds
-- **Research Scope**: 30-60 seconds
-- **PDF Generation**: 10-20 seconds
-
-## 🔧 Development Setup
-
-### Prerequisites
 ```bash
-Python 3.8+
+git clone https://github.com/yourusername/ResearchBuddy-Research-Paper-API.git
+cd ResearchBuddy-Research-Paper-API
+```
+
+### 2. Backend Setup
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+.\venv\Scripts\Activate.ps1
+# Mac/Linux:
+source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Environment Variables
-Create a `.env` file with:
+### 3. Environment Configuration
+
+Create a `.env` file in the root directory:
+
 ```bash
-PROJECT_ID=your-gcp-project
-VERTEX_AI_LOCATION=us-central1
-VERTEX_AI_API_KEY=your-vertex-ai-api-key
-SERP_API_KEY=your-serp-api-key
-SECRET_KEY=your-secret-key
+cp .env.example .env
 ```
 
-### Running the Server
+Edit `.env` and add your API keys:
+
+```env
+# Google Cloud (for Gemini AI)
+GOOGLE_CLOUD_PROJECT=your-project-id
+GOOGLE_APPLICATION_CREDENTIALS=path/to/credentials.json
+
+# Optional: Google Scholar (for enhanced results)
+SERP_API_KEY=your_serpapi_key_here
+
+# Optional: IEEE Xplore
+IEEE_API_KEY=your_ieee_key_here
+```
+
+**Getting Google Cloud Credentials:**
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing
+3. Enable Vertex AI API
+4. Create service account and download JSON key
+5. Place JSON file in project root
+6. Update `GOOGLE_APPLICATION_CREDENTIALS` path in `.env`
+
+### 4. Frontend Setup
+
 ```bash
-# Development
-python -m uvicorn app.main_full:app --reload --host 127.0.0.1 --port 8004
-
-# Production
-python -m uvicorn app.main_full:app --host 0.0.0.0 --port 8000
+cd frontend
+npm install
 ```
 
-### API Documentation
-Visit `http://localhost:8004/docs` for interactive API documentation.
+### 5. Start the Application
 
-## 📝 Error Handling
-
-All endpoints return standard HTTP status codes:
-
-- **200**: Success
-- **400**: Bad Request (invalid parameters)
-- **404**: Not Found (session not found)
-- **429**: Rate Limit Exceeded (Google Scholar)
-- **500**: Internal Server Error
-
-Error response format:
-```json
-{
-  "detail": "Error message description"
-}
+**Terminal 1 - Backend:**
+```bash
+# From project root
+.\venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload --port 8004
 ```
 
-## 🔒 Security
-
-- API keys are securely stored in environment variables
-- Rate limiting prevents abuse
-- CORS configured for frontend integration
-- No sensitive data logged
-
-## 📊 Usage Examples
-
-### Frontend Integration (JavaScript)
-
-```javascript
-// Basic paper analysis
-const response = await fetch('http://localhost:8004/analyze/papers-with-ai', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    query: 'artificial intelligence',
-    max_papers: 5,
-    sources: ['arxiv', 'pubmed']
-  })
-});
-
-const data = await response.json();
-console.log(data.results);
-
-// Research gaps analysis
-const gapsResponse = await fetch('http://localhost:8004/analyze/research-gaps', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    query: 'machine learning',
-    research_domain: 'computer science',
-    max_papers: 10,
-    sources: ['arxiv']
-  })
-});
-
-const gapsData = await gapsResponse.json();
-console.log(gapsData.research_gaps);
-
-// PDF report generation
-const reportResponse = await fetch('http://localhost:8004/generate/comprehensive-report', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    query: 'quantum computing',
-    research_domain: 'physics',
-    research_question: 'What are the latest advances in quantum error correction?',
-    timeline_months: 24,
-    max_papers: 8,
-    sources: ['arxiv'],
-    report_title: 'Quantum Error Correction Research Analysis'
-  })
-});
-
-// Handle PDF download
-const blob = await reportResponse.blob();
-const url = window.URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = 'research-report.pdf';
-a.click();
+**Terminal 2 - Frontend:**
+```bash
+# From frontend directory
+cd frontend
+npm run dev
 ```
 
-### React Integration Example
+**Access the application:**
+- Frontend: http://localhost:3000
+- Backend API: http://127.0.0.1:8004
+- API Documentation: http://127.0.0.1:8004/docs
 
-```jsx
-import React, { useState } from 'react';
+## 📁 Project Structure
 
-const PaperAnalysis = () => {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const analyzePapers = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('http://localhost:8004/analyze/papers-with-ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query,
-          max_papers: 5,
-          sources: ['arxiv', 'pubmed']
-        })
-      });
-      const data = await response.json();
-      setResults(data);
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div>
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Enter research query"
-      />
-      <button onClick={analyzePapers} disabled={loading}>
-        {loading ? 'Analyzing...' : 'Analyze Papers'}
-      </button>
-
-      {results && (
-        <div>
-          <h3>Found {results.papers_found} papers</h3>
-          {results.results.map((result, index) => (
-            <div key={index}>
-              <h4>{result.paper.title}</h4>
-              <p><strong>Summary:</strong> {result.analysis.summary}</p>
-              <p><strong>Key Contributions:</strong></p>
-              <ul>
-                {result.analysis.key_contributions.map((contrib, i) => (
-                  <li key={i}>{contrib}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+```
+ResearchBuddy-Research-Paper-API/
+├── app/                          # Backend application
+│   ├── api/                      # API endpoints
+│   │   └── v1/
+│   │       └── endpoints/        # Search, chat endpoints
+│   ├── core/                     # Configuration & dependencies
+│   ├── models/                   # Data models (Paper, Chat, etc.)
+│   └── services/                 # Business logic
+│       ├── llm/                  # AI integration (Vertex AI)
+│       ├── paper_search/         # Academic database searches
+│       └── storage/              # Data persistence
+├── frontend/                     # React frontend
+│   ├── src/
+│   │   ├── components/           # Reusable UI components
+│   │   ├── pages/                # Main pages (Search, Results, etc.)
+│   │   └── services/             # API calls & bookmark service
+│   └── public/
+├── .mock_firestore_data/         # Local data storage (gitignored)
+├── venv/                         # Python virtual environment
+├── .env                          # Environment variables (gitignored)
+├── .env.example                  # Template for .env
+├── requirements.txt              # Python dependencies
+└── README.md
 ```
 
-## 🤝 Support
+## 🔧 Usage
 
-For technical issues or questions, contact the development team.
+### Searching Papers
+
+1. Enter your search query in the search box
+2. Select sources (arXiv, PubMed, Google Scholar)
+3. Click "Search Papers"
+4. View results with paper metadata
+
+### AI Chat
+
+1. Click on any paper to open detail view
+2. Type your question in the chat input
+3. AI will respond based on paper content
+4. Conversation history is maintained per paper
+
+### Bookmarks
+
+1. Click bookmark icon on any paper
+2. Choose a category (To Read, Currently Reading, etc.)
+3. Access bookmarks from navigation menu
+4. Add notes, move between categories, or remove bookmarks
+
+## 🔑 API Endpoints
+
+### Search
+- `POST /api/v1/search` - Start new paper search
+- `GET /api/v1/search/{session_id}/status` - Check search status
+- `GET /api/v1/search/{session_id}/results` - Get search results
+
+### Chat
+- `POST /api/v1/chat` - Chat with AI about a paper
+- `GET /api/v1/chat/{session_id}/history` - Get chat history
+
+## 🛠️ Configuration
+
+### Mock vs Real Services
+
+By default, the app uses **mock services** for development:
+- Mock Firestore (local JSON files)
+- Mock Vertex AI (scripted responses)
+
+To use real services, update `app/main.py`:
+```python
+# Change from:
+from app.core.mock_dependencies import get_firestore_manager, get_llm_service
+
+# To:
+from app.core.dependencies import get_firestore_manager, get_llm_service
+```
+
+### Customizing Search Sources
+
+Edit `app/services/paper_search/aggregator.py` to enable/disable sources or adjust result limits.
+
+## 🐛 Troubleshooting
+
+**Backend won't start:**
+- Ensure virtual environment is activated
+- Check Python version: `python --version` (3.8+)
+- Verify all dependencies: `pip install -r requirements.txt`
+
+**Frontend won't load:**
+- Clear node_modules: `rm -rf node_modules && npm install`
+- Check Node version: `node --version` (16+)
+- Verify backend is running on port 8004
+
+**API errors:**
+- Check `.env` file exists and contains valid credentials
+- Verify Google Cloud credentials are correct
+- Check API quotas in Google Cloud Console
+
+**No search results:**
+- Check internet connection
+- Verify API keys are valid
+- Check terminal for error messages
+
+## 📦 Data Storage
+
+**Local Development:**
+- Chat history: `.mock_firestore_data/`
+- Bookmarks: Browser LocalStorage
+- Search sessions: Temporary in-memory
+
+**Production Ready:**
+- Replace mock services with real Firestore
+- Implement user authentication
+- Add proper database persistence
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature-name`
+3. Commit changes: `git commit -am 'Add feature'`
+4. Push to branch: `git push origin feature-name`
+5. Submit pull request
 
 ## 📄 License
 
-Private project - All rights reserved.
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- arXiv for open access preprints
+- PubMed/NCBI for biomedical literature
+- Google Scholar for comprehensive academic search
+- Google Cloud for Gemini AI
+- FastAPI and React communities
+
+## 📧 Contact
+
+For questions or support, please open an issue on GitHub.
+
+---
+
+**Made with ❤️ for researchers and students**

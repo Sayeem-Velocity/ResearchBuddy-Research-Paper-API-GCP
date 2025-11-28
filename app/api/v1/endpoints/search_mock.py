@@ -15,15 +15,16 @@ from app.models.search import (
 )
 from app.models.paper import PaperWithAnalysis
 from app.services.paper_search.aggregator import PaperSearchAggregator
-from app.services.llm.vertex_ai import VertexAIService
+from app.services.llm.mock_vertex_ai import MockVertexAIService
 from app.services.storage.mock_firestore_manager import MockFirestoreSessionManager
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# Initialize services
+# Initialize services as singletons
 search_aggregator = PaperSearchAggregator()
-vertex_ai_service = VertexAIService()
+vertex_ai_service = MockVertexAIService()
+_mock_session_manager = MockFirestoreSessionManager()
 
 @router.post("/search", response_model=SearchResponse)
 async def search_papers(
@@ -37,10 +38,8 @@ async def search_papers(
     Start a new paper search across multiple sources
     """
     try:
-        session_manager = MockFirestoreSessionManager(db)
-
-        # Create new session
-        session_id = await session_manager.create_session(current_user, search_request)
+        # Use singleton session manager
+        session_id = await _mock_session_manager.create_session(current_user, search_request)
 
         # Start background search task
         background_tasks.add_task(
@@ -76,8 +75,8 @@ async def get_search_status(
     Get the status of a search session
     """
     try:
-        session_manager = MockFirestoreSessionManager(db)
-        session = await session_manager.get_session(current_user, session_id)
+        # Use singleton session manager
+        session = await _mock_session_manager.get_session(current_user, session_id)
 
         if not session:
             raise HTTPException(status_code=404, detail="Session not found")
@@ -85,6 +84,8 @@ async def get_search_status(
         return SearchStatusResponse(
             session_id=session.session_id,
             status=session.status,
+            query=session.query,
+            sources=session.sources,
             results_count=session.results_count,
             error_message=session.error_message,
             created_at=session.created_at,
@@ -107,15 +108,14 @@ async def get_search_results(
     Get the results of a completed search session
     """
     try:
-        session_manager = MockFirestoreSessionManager(db)
-
+        # Use singleton session manager
         # Get session info
-        session = await session_manager.get_session(current_user, session_id)
+        session = await _mock_session_manager.get_session(current_user, session_id)
         if not session:
             raise HTTPException(status_code=404, detail="Session not found")
 
         # Get papers with analysis
-        papers_with_analysis = await session_manager.get_session_papers(current_user, session_id)
+        papers_with_analysis = await _mock_session_manager.get_session_papers(current_user, session_id)
 
         return SearchResults(
             session=session,
@@ -139,8 +139,8 @@ async def get_user_sessions(
     Get user's search sessions
     """
     try:
-        session_manager = MockFirestoreSessionManager(db)
-        sessions = await session_manager.get_user_sessions(
+        # Use singleton session manager
+        sessions = await _mock_session_manager.get_user_sessions(
             current_user,
             limit=limit,
             status_filter=status_filter
@@ -172,10 +172,9 @@ async def delete_session(
     Delete a search session and its data
     """
     try:
-        session_manager = MockFirestoreSessionManager(db)
-
+        # Use singleton session manager
         # Verify session exists and belongs to user
-        session = await session_manager.get_session(current_user, session_id)
+        session = await _mock_session_manager.get_session(current_user, session_id)
         if not session:
             raise HTTPException(status_code=404, detail="Session not found")
 
@@ -199,13 +198,12 @@ async def process_search_task(
     """
     Background task to process the search request
     """
-    session_manager = MockFirestoreSessionManager(db)
-
+    # Use singleton session manager
     try:
         logger.info(f"Processing search task for session {session_id}")
 
         # Update status to processing
-        await session_manager.update_session_status(
+        await _mock_session_manager.update_session_status(
             user_id, session_id, SearchStatus.PROCESSING
         )
 
@@ -220,7 +218,7 @@ async def process_search_task(
         )
 
         if not papers:
-            await session_manager.update_session_status(
+            await _mock_session_manager.update_session_status(
                 user_id, session_id, SearchStatus.COMPLETED,
                 error_message="No papers found for the given query"
             )
@@ -250,10 +248,10 @@ async def process_search_task(
             ]
 
         # Store papers and analyses
-        await session_manager.store_papers(user_id, session_id, papers_with_analysis)
+        await _mock_session_manager.store_papers(user_id, session_id, papers_with_analysis)
 
         # Update session as completed
-        await session_manager.update_session_status(
+        await _mock_session_manager.update_session_status(
             user_id, session_id, SearchStatus.COMPLETED,
             results_count=len(papers)
         )
@@ -268,7 +266,7 @@ async def process_search_task(
         logger.error(f"Error in search task for session {session_id}: {e}")
 
         # Update session as failed
-        await session_manager.update_session_status(
+        await _mock_session_manager.update_session_status(
             user_id, session_id, SearchStatus.FAILED,
             error_message=str(e)
         )

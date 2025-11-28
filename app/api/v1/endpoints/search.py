@@ -3,7 +3,7 @@ import asyncio
 import logging
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from typing import List, Optional
-from google.cloud.firestore import firestore
+from google.cloud import firestore  # ✅ Correct
 from app.core.dependencies import get_current_user, check_api_quota, increment_api_usage
 from app.core.database import get_firestore_db
 from app.models.search import (
@@ -35,6 +35,13 @@ async def search_papers(
     Start a new paper search across multiple sources
     """
     try:
+        logger.info(f"Received search request from user {current_user}: {search_request.query}")
+        logger.info(f"Sources: {search_request.sources}, max_results: {search_request.max_results}")
+        
+        if db is None:
+            logger.error("Firestore database is None - check Firebase initialization")
+            raise HTTPException(status_code=503, detail="Database not available. Please check Firebase configuration.")
+        
         session_manager = FirestoreSessionManager(db)
 
         # Create new session
@@ -60,9 +67,11 @@ async def search_papers(
             message="Search started successfully. Check status for progress."
         )
 
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Error starting search: {e}")
-        raise HTTPException(status_code=500, detail="Failed to start search")
+        logger.error(f"Error starting search: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to start search: {str(e)}")
 
 @router.get("/search/status/{session_id}", response_model=SearchStatusResponse)
 async def get_search_status(

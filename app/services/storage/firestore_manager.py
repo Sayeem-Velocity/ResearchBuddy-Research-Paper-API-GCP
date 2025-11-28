@@ -3,9 +3,10 @@ import uuid
 import logging
 from typing import List, Dict, Optional, Any
 from datetime import datetime
-from google.cloud.firestore import Client, firestore
+from google.cloud.firestore import Client
+from firebase_admin import firestore
 from app.core.database import get_firestore_db
-from app.models.search import SearchSession, SearchStatus, SearchRequest, PaperSearchRequest
+from app.models.search import SearchSession, SearchStatus, PaperSearchRequest
 from app.models.paper import Paper, PaperAnalysis, PaperWithAnalysis
 from app.models.chat import ChatMessage, MessageRole
 

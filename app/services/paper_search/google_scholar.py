@@ -140,7 +140,8 @@ class GoogleScholarSearcher:
                 doi=f"10.1000/mock.scholar.{i+1}",
                 citation_count=50 - (i * 10),
                 venue=f"Mock Journal {i+1}",
-                keywords=[f"keyword{i+1}", query.split()[0] if query.split() else "research"]
+                keywords=[f"keyword{i+1}", query.split()[0] if query.split() else "research"],
+                is_open_access=True
             ))
         return papers
 
@@ -239,7 +240,8 @@ class GoogleScholarSearcher:
                 doi=self._extract_doi(result.get("link", "")),
                 citation_count=citation_count,
                 venue=venue,
-                keywords=[]
+                keywords=[],
+                is_open_access=pdf_url is not None  # Mark as open access if PDF is available
             )
 
         except Exception as e:
