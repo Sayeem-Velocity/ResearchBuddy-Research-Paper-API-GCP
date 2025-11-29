@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Send, Loader2, Bot, User as UserIcon, ExternalLink, Calendar, Users, FileText, Sparkles, Download, Bookmark, BookmarkCheck } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Bot, User as UserIcon, ExternalLink, Calendar, Users, FileText, Sparkles, Download, Bookmark, BookmarkCheck, CheckCircle, AlertTriangle, Microscope, Target, BarChart3, Search, Rocket, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { chatWithPaper, getChatHistory } from '../services/api';
@@ -309,7 +309,7 @@ const PaperDetailPage = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">✅ Strengths</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-green-600" />Strengths</h3>
                     <ul className="list-disc list-inside space-y-1 text-gray-700">
                       {paper.analysis.strengths.map((strength, idx) => (
                         <li key={idx}>{strength}</li>
@@ -318,7 +318,7 @@ const PaperDetailPage = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">⚠️ Weaknesses</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><AlertTriangle className="w-4 h-4 mr-2 text-amber-600" />Weaknesses</h3>
                     <ul className="list-disc list-inside space-y-1 text-gray-700">
                       {paper.analysis.weaknesses.map((weakness, idx) => (
                         <li key={idx}>{weakness}</li>
@@ -328,7 +328,7 @@ const PaperDetailPage = () => {
 
                   {paper.analysis.key_findings && paper.analysis.key_findings.length > 0 && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">🔬 Key Findings</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><Microscope className="w-4 h-4 mr-2 text-blue-600" />Key Findings</h3>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {paper.analysis.key_findings.map((finding, idx) => (
                           <li key={idx}>{finding}</li>
@@ -339,14 +339,14 @@ const PaperDetailPage = () => {
 
                   {paper.analysis.methodology && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">🔬 Methodology</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><Microscope className="w-4 h-4 mr-2 text-blue-600" />Methodology</h3>
                       <p className="text-gray-700">{paper.analysis.methodology}</p>
                     </div>
                   )}
 
                   {paper.analysis.key_contributions && paper.analysis.key_contributions.length > 0 && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">🎯 Key Contributions</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><Target className="w-4 h-4 mr-2 text-purple-600" />Key Contributions</h3>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {paper.analysis.key_contributions.map((contribution, idx) => (
                           <li key={idx}>{contribution}</li>
@@ -357,7 +357,7 @@ const PaperDetailPage = () => {
 
                   {paper.analysis.main_findings && paper.analysis.main_findings.length > 0 && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">📊 Main Findings</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><BarChart3 className="w-4 h-4 mr-2 text-indigo-600" />Main Findings</h3>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {paper.analysis.main_findings.map((finding, idx) => (
                           <li key={idx}>{finding}</li>
@@ -368,7 +368,7 @@ const PaperDetailPage = () => {
 
                   {paper.analysis.research_gaps && paper.analysis.research_gaps.length > 0 && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">🔍 Research Gaps</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><Search className="w-4 h-4 mr-2 text-orange-600" />Research Gaps</h3>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {paper.analysis.research_gaps.map((gap, idx) => (
                           <li key={idx}>{gap}</li>
@@ -379,7 +379,7 @@ const PaperDetailPage = () => {
 
                   {paper.analysis.future_scope && paper.analysis.future_scope.length > 0 && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">🚀 Future Scope</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><Rocket className="w-4 h-4 mr-2 text-cyan-600" />Future Scope</h3>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {paper.analysis.future_scope.map((scope, idx) => (
                           <li key={idx}>{scope}</li>
@@ -440,21 +440,24 @@ const PaperDetailPage = () => {
                     <div className="mt-4 space-y-2">
                       <button
                         onClick={() => setInputMessage("What are the main contributions?")}
-                        className="block w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-gray-700 transition-colors"
+                        className="flex items-center w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-gray-700 transition-colors"
                       >
-                        💡 What are the main contributions?
+                        <Lightbulb className="w-4 h-4 mr-2 text-yellow-500" />
+                        What are the main contributions?
                       </button>
                       <button
                         onClick={() => setInputMessage("Explain the methodology")}
-                        className="block w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-gray-700 transition-colors"
+                        className="flex items-center w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-gray-700 transition-colors"
                       >
-                        🔬 Explain the methodology
+                        <Microscope className="w-4 h-4 mr-2 text-blue-500" />
+                        Explain the methodology
                       </button>
                       <button
                         onClick={() => setInputMessage("What are the limitations?")}
-                        className="block w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-gray-700 transition-colors"
+                        className="flex items-center w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-gray-700 transition-colors"
                       >
-                        ⚠️ What are the limitations?
+                        <AlertTriangle className="w-4 h-4 mr-2 text-amber-500" />
+                        What are the limitations?
                       </button>
                     </div>
                   </div>

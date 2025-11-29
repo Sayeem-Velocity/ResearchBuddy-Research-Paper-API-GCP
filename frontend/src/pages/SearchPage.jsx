@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Loader2, AlertCircle, BookOpen, Database } from 'lucide-react';
+import { Search, Loader2, AlertCircle, BookOpen, Database, GraduationCap, Stethoscope, Zap, Archive } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { searchPapers } from '../services/api';
+
+// Source icons mapping
+const sourceIcons = {
+  arxiv: Archive,
+  pubmed: Stethoscope,
+  google_scholar: GraduationCap,
+  ieee: Zap,
+};
 
 const SearchPage = () => {
   const navigate = useNavigate();
@@ -13,10 +21,10 @@ const SearchPage = () => {
   const [error, setError] = useState('');
 
   const availableSources = [
-    { id: 'arxiv', name: 'arXiv', icon: '📚' },
-    { id: 'pubmed', name: 'PubMed', icon: '🏥' },
-    { id: 'google_scholar', name: 'Google Scholar', icon: '🎓' },
-    { id: 'ieee', name: 'IEEE Xplore', icon: '⚡' },
+    { id: 'arxiv', name: 'arXiv', icon: 'arxiv' },
+    { id: 'pubmed', name: 'PubMed', icon: 'pubmed' },
+    { id: 'google_scholar', name: 'Google Scholar', icon: 'google_scholar' },
+    { id: 'ieee', name: 'IEEE Xplore', icon: 'ieee' },
   ];
 
   const handleSourceToggle = (sourceId) => {
@@ -101,26 +109,33 @@ const SearchPage = () => {
                   Select Data Sources
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {availableSources.map(source => (
-                    <button
-                      key={source.id}
-                      type="button"
-                      onClick={() => handleSourceToggle(source.id)}
-                      disabled={loading}
-                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                        sources.includes(source.id)
-                          ? 'border-primary-500 bg-primary-50 shadow-md'
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
-                      } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-lg'}`}
-                    >
-                      <div className="text-2xl mb-2">{source.icon}</div>
-                      <div className={`text-sm font-medium ${
-                        sources.includes(source.id) ? 'text-primary-700' : 'text-gray-700'
-                      }`}>
-                        {source.name}
-                      </div>
-                    </button>
-                  ))}
+                  {availableSources.map(source => {
+                    const IconComponent = sourceIcons[source.icon];
+                    return (
+                      <button
+                        key={source.id}
+                        type="button"
+                        onClick={() => handleSourceToggle(source.id)}
+                        disabled={loading}
+                        className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                          sources.includes(source.id)
+                            ? 'border-primary-500 bg-primary-50 shadow-md'
+                            : 'border-gray-200 hover:border-gray-300 bg-white'
+                        } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-lg'}`}
+                      >
+                        <div className="flex justify-center mb-2">
+                          <IconComponent className={`w-8 h-8 ${
+                            sources.includes(source.id) ? 'text-primary-600' : 'text-gray-500'
+                          }`} />
+                        </div>
+                        <div className={`text-sm font-medium ${
+                          sources.includes(source.id) ? 'text-primary-700' : 'text-gray-700'
+                        }`}>
+                          {source.name}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

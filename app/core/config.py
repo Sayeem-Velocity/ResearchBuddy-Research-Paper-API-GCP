@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
 import os
 import secrets
@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
 
     # Project Configuration
-    project_id: str
+    project_id: str = "research-buddy-local"
     environment: str = "development"
 
     # API Configuration
@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     ieee_api_key: Optional[str] = None
 
     # Security Configuration
-    secret_key: str
+    secret_key: str = "dev-secret-key-change-in-production"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
 
@@ -44,24 +44,13 @@ class Settings(BaseSettings):
     # CORS Configuration
     allowed_origins: str = "http://localhost:3000,http://localhost:8080"
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
-        
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # Generate a random secret key if none provided (for development only)
-        if self.secret_key == "your-secret-key-change-this" or not self.secret_key:
-            if self.environment == "development":
-                print("⚠️  WARNING: Using auto-generated secret key for development.")
-                print("   For production, set SECRET_KEY in your .env file!")
-                self.secret_key = secrets.token_urlsafe(32)
-            else:
-                raise ValueError(
-                    "SECRET_KEY must be set in production environment! "
-                    "Generate one using: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
-                )
+    # Pydantic v2 settings config
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore"  # Ignore extra fields from env
+    )
     
     @property
     def is_development(self) -> bool:

@@ -2,13 +2,13 @@
 const BOOKMARKS_KEY = 'research_buddy_bookmarks';
 const CATEGORIES_KEY = 'research_buddy_categories';
 
-// Default categories
+// Default categories with professional icon IDs
 const DEFAULT_CATEGORIES = [
-  { id: 'to-read', name: 'To Read', color: 'blue', icon: '📚' },
-  { id: 'reading', name: 'Currently Reading', color: 'yellow', icon: '📖' },
-  { id: 'completed', name: 'Completed', color: 'green', icon: '✅' },
-  { id: 'favorites', name: 'Favorites', color: 'red', icon: '⭐' },
-  { id: 'research', name: 'For Research', color: 'purple', icon: '🔬' }
+  { id: 'to-read', name: 'To Read', color: 'blue', icon: 'book' },
+  { id: 'reading', name: 'Currently Reading', color: 'yellow', icon: 'bookmark' },
+  { id: 'completed', name: 'Completed', color: 'green', icon: 'flag' },
+  { id: 'favorites', name: 'Favorites', color: 'red', icon: 'star' },
+  { id: 'research', name: 'For Research', color: 'purple', icon: 'microscope' }
 ];
 
 // Get all bookmarks

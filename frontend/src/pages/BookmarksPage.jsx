@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bookmark, Trash2, MessageSquare, ExternalLink, Calendar, FileText, Plus, Edit2, X, ChevronDown, Filter, Download } from 'lucide-react';
+import { Bookmark, Trash2, MessageSquare, ExternalLink, Calendar, FileText, Plus, Edit2, X, ChevronDown, Filter, Download, Tag, BookOpen, Star, Heart, Flag, Folder, Archive, Lightbulb, Target, Microscope } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   getBookmarks,
@@ -12,6 +12,21 @@ import {
   deleteCategory
 } from '../services/bookmarkService';
 
+// Professional icon options for categories
+const categoryIconOptions = [
+  { id: 'tag', icon: Tag, name: 'Tag' },
+  { id: 'bookmark', icon: Bookmark, name: 'Bookmark' },
+  { id: 'book', icon: BookOpen, name: 'Book' },
+  { id: 'star', icon: Star, name: 'Star' },
+  { id: 'heart', icon: Heart, name: 'Heart' },
+  { id: 'flag', icon: Flag, name: 'Flag' },
+  { id: 'folder', icon: Folder, name: 'Folder' },
+  { id: 'archive', icon: Archive, name: 'Archive' },
+  { id: 'lightbulb', icon: Lightbulb, name: 'Idea' },
+  { id: 'target', icon: Target, name: 'Target' },
+  { id: 'microscope', icon: Microscope, name: 'Research' },
+];
+
 const BookmarksPage = () => {
   const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState([]);
@@ -20,7 +35,7 @@ const BookmarksPage = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryColor, setNewCategoryColor] = useState('blue');
-  const [newCategoryIcon, setNewCategoryIcon] = useState('📌');
+  const [newCategoryIcon, setNewCategoryIcon] = useState('tag');
   const [editingNotes, setEditingNotes] = useState(null);
   const [notesText, setNotesText] = useState('');
 
@@ -98,6 +113,17 @@ const BookmarksPage = () => {
     return colors[color] || 'bg-gray-500';
   };
 
+  // Render category icon (supports both new icon IDs and legacy emojis)
+  const renderCategoryIcon = (iconId, className = "w-4 h-4") => {
+    const iconOption = categoryIconOptions.find(opt => opt.id === iconId);
+    if (iconOption) {
+      const IconComponent = iconOption.icon;
+      return <IconComponent className={className} />;
+    }
+    // Fallback for legacy emoji icons - show Tag icon
+    return <Tag className={className} />;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -149,7 +175,7 @@ const BookmarksPage = () => {
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                   }`}
                 >
-                  <span>{category.icon}</span>
+                  {renderCategoryIcon(category.icon)}
                   <span>{category.name}</span>
                   <span className="text-sm opacity-75">({count})</span>
                   {category.isCustom && selectedCategory === category.id && (
@@ -406,16 +432,30 @@ const BookmarksPage = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Icon (Emoji)
+                      Icon
                     </label>
-                    <input
-                      type="text"
-                      value={newCategoryIcon}
-                      onChange={(e) => setNewCategoryIcon(e.target.value)}
-                      placeholder="📌"
-                      maxLength={2}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-2xl"
-                    />
+                    <div className="grid grid-cols-6 gap-2">
+                      {categoryIconOptions.map((option) => {
+                        const IconComponent = option.icon;
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            onClick={() => setNewCategoryIcon(option.id)}
+                            className={`p-3 rounded-lg border-2 transition-all flex items-center justify-center ${
+                              newCategoryIcon === option.id
+                                ? 'border-primary-500 bg-primary-50'
+                                : 'border-gray-200 hover:border-gray-300'
+                            }`}
+                            title={option.name}
+                          >
+                            <IconComponent className={`w-5 h-5 ${
+                              newCategoryIcon === option.id ? 'text-primary-600' : 'text-gray-600'
+                            }`} />
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
