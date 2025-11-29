@@ -257,5 +257,3 @@ This project is licensed under the MIT License.
 For questions or support, please open an issue on GitHub.
 
 ---
-
-**Made with ❤️ for researchers and students**
