@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.history/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Local development files
+.env
+.env.local
+.env.development
+*.local
+credentials.json
+firebase-admin-sdk.json
+
+# Mock data
+.mock_firestore_data/
+.scholar_usage.json
+
+# Logs
+*.log
+logs/
+
+# Frontend (for backend Dockerfile)
+frontend/
+
+# Other
+*.md
+!README.md
+Makefile
+docker-compose*.yml
