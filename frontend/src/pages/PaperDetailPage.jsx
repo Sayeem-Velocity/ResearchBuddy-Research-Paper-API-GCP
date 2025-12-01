@@ -193,45 +193,45 @@ const PaperDetailPage = () => {
             <span className="font-medium">Back to Results</span>
           </button>
           
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">{paper?.title}</h1>
-              <div className="flex flex-wrap items-center gap-4 text-gray-600">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 break-words">{paper?.title}</h1>
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-gray-600">
                 {paper?.authors && (
                   <div className="flex items-center">
-                    <Users className="w-4 h-4 mr-2" />
-                    <span className="text-sm">{paper.authors.join(', ')}</span>
+                    <Users className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm truncate max-w-xs sm:max-w-md">{paper.authors.join(', ')}</span>
                   </div>
                 )}
                 {paper?.published_date && (
                   <div className="flex items-center">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    <span className="text-sm">{new Date(paper.published_date).toLocaleDateString()}</span>
+                    <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm">{new Date(paper.published_date).toLocaleDateString()}</span>
                   </div>
                 )}
                 {paper?.citations !== undefined && (
-                  <div className="badge bg-primary-100 text-primary-700">
+                  <div className="badge bg-primary-100 text-primary-700 text-xs">
                     {paper.citations} citations
                   </div>
                 )}
-                <div className="badge bg-blue-100 text-blue-700">
+                <div className="badge bg-blue-100 text-blue-700 text-xs">
                   {paper?.source}
                 </div>
               </div>
             </div>
-            <div className="flex space-x-2 relative">
+            <div className="flex flex-wrap gap-2 relative">
               {/* Bookmark Button */}
               <div className="relative">
                 <button
                   onClick={() => bookmarked ? handleBookmark() : setShowCategoryMenu(!showCategoryMenu)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
+                  className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm sm:text-base ${
                     bookmarked
                       ? 'bg-primary-600 text-white hover:bg-primary-700 shadow-md'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
                   }`}
                 >
                   {bookmarked ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-                  <span>{bookmarked ? 'Bookmarked' : 'Bookmark'}</span>
+                  <span className="hidden sm:inline">{bookmarked ? 'Bookmarked' : 'Bookmark'}</span>
                 </button>
 
                 {/* Category Menu */}
@@ -266,7 +266,7 @@ const PaperDetailPage = () => {
                   href={paper.pdf_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-medium transition-all duration-200 shadow-md"
+                  className="flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-medium transition-all duration-200 shadow-md text-sm sm:text-base"
                 >
                   <Download className="w-4 h-4" />
                   <span>PDF</span>
@@ -277,10 +277,11 @@ const PaperDetailPage = () => {
                   href={paper.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-secondary flex items-center space-x-2"
+                  className="btn-secondary flex items-center space-x-2 text-sm sm:text-base"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  <span>View Source</span>
+                  <span className="hidden sm:inline">View Source</span>
+                  <span className="sm:hidden">Source</span>
                 </a>
               )}
             </div>
@@ -289,8 +290,8 @@ const PaperDetailPage = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-2 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
           {/* Paper Details */}
           <div className="space-y-6">
             {/* Abstract */}

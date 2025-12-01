@@ -131,31 +131,31 @@ const BookmarksPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2">
                 My Bookmarks
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Organize and manage your saved research papers
               </p>
             </div>
             <button
               onClick={() => setShowCategoryModal(true)}
-              className="btn-primary flex items-center gap-2"
+              className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto"
             >
               <Plus className="w-5 h-5" />
-              New Category
+              <span>New Category</span>
             </button>
           </div>
 
           {/* Category Filter */}
-          <div className="flex items-center gap-3 overflow-x-auto pb-4">
+          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
+              className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
                 selectedCategory === 'all'
                   ? 'bg-primary-600 text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
@@ -169,7 +169,7 @@ const BookmarksPage = () => {
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 whitespace-nowrap ${
+                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 whitespace-nowrap text-sm sm:text-base ${
                     selectedCategory === category.id
                       ? 'bg-primary-600 text-white shadow-lg'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
@@ -177,7 +177,7 @@ const BookmarksPage = () => {
                 >
                   {renderCategoryIcon(category.icon)}
                   <span>{category.name}</span>
-                  <span className="text-sm opacity-75">({count})</span>
+                  <span className="text-xs sm:text-sm opacity-75">({count})</span>
                   {category.isCustom && selectedCategory === category.id && (
                     <button
                       onClick={(e) => {
