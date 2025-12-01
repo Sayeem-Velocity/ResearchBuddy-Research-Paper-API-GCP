@@ -51,7 +51,7 @@ const HomePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight"
+              className="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-primary-600 via-teal-500 to-cyan-500 bg-clip-text text-transparent leading-tight"
             >
               Research Papers,
               <br />
@@ -96,7 +96,7 @@ const HomePage = () => {
           </div>
 
           {/* Floating elements decoration */}
-          <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"></div>
+          <div className="absolute top-20 left-10 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"></div>
           <div className="absolute top-40 right-10 w-72 h-72 bg-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
         </div>
       </motion.div>
@@ -111,7 +111,7 @@ const HomePage = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-            Why Choose ResearchBuddy?
+            Why Choose ResearchBuddy AI?
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Powerful features designed to accelerate your research workflow
@@ -129,7 +129,7 @@ const HomePage = () => {
               whileHover={{ y: -5 }}
               className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100"
             >
-              <div className="bg-gradient-to-br from-primary-500 to-purple-600 text-white p-4 rounded-xl inline-block mb-6">
+              <div className="bg-gradient-to-br from-primary-500 to-teal-600 text-white p-4 rounded-xl inline-block mb-6">
                 {feature.icon}
               </div>
               <h3 className="text-xl font-bold mb-3 text-gray-900">{feature.title}</h3>
@@ -140,7 +140,7 @@ const HomePage = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="bg-gradient-to-r from-primary-600 to-purple-600 py-16">
+      <div className="bg-gradient-to-r from-primary-600 to-teal-600 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8 text-center text-white">
             <motion.div
@@ -190,7 +190,7 @@ const HomePage = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="bg-gradient-to-r from-primary-500 to-purple-600 rounded-3xl p-12 md:p-16 text-center text-white shadow-2xl"
+          className="bg-gradient-to-r from-primary-500 to-teal-600 rounded-3xl p-12 md:p-16 text-center text-white shadow-2xl"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Supercharge Your Research?

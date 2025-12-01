@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BookOpen, Search, Home, Bookmark } from 'lucide-react';
+import { Search, Home, Bookmark } from 'lucide-react';
 
 const Navbar = () => {
   return (
@@ -7,11 +7,13 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="bg-gradient-to-r from-primary-500 to-purple-600 p-2 rounded-lg group-hover:scale-110 transition-transform duration-200">
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
-              ResearchBuddy
+            <img 
+              src="/RBAI_LOGO.webp" 
+              alt="ResearchBuddy AI" 
+              className="w-10 h-10 rounded-lg group-hover:scale-110 transition-transform duration-200"
+            />
+            <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-teal-600 bg-clip-text text-transparent">
+              ResearchBuddy AI
             </span>
           </Link>
           

@@ -70,10 +70,10 @@ const SearchPage = () => {
         >
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-purple-600 rounded-2xl mb-6 shadow-lg">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-teal-600 rounded-2xl mb-6 shadow-lg">
               <Search className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-teal-600 bg-clip-text text-transparent">
               Search Research Papers
             </h1>
             <p className="text-xl text-gray-600">
@@ -200,8 +200,8 @@ const SearchPage = () => {
               <div className="text-blue-600 font-semibold mb-1">Multi-Source</div>
               <div className="text-sm text-gray-600">Search multiple databases at once</div>
             </div>
-            <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
-              <div className="text-purple-600 font-semibold mb-1">AI Analysis</div>
+            <div className="bg-teal-50 border border-teal-200 rounded-xl p-4">
+              <div className="text-teal-600 font-semibold mb-1">AI Analysis</div>
               <div className="text-sm text-gray-600">Get intelligent paper summaries</div>
             </div>
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">

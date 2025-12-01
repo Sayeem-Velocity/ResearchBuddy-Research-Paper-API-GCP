@@ -1,10 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Send, Loader2, Bot, User as UserIcon, ExternalLink, Calendar, Users, FileText, Sparkles, Download, Bookmark, BookmarkCheck, CheckCircle, AlertTriangle, Microscope, Target, BarChart3, Search, Rocket, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Bot, User as UserIcon, ExternalLink, Calendar, Users, FileText, Sparkles, Download, Bookmark, BookmarkCheck, CheckCircle, AlertTriangle, Microscope, Target, BarChart3, Search, Rocket, Lightbulb, Book, Flag, Star, BookMarked } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { chatWithPaper, getChatHistory } from '../services/api';
 import { addBookmark, removeBookmark, isBookmarked, getCategories } from '../services/bookmarkService';
+
+// Icon mapping for categories
+const categoryIconMap = {
+  'book': Book,
+  'bookmark': BookMarked,
+  'flag': Flag,
+  'star': Star,
+  'microscope': Microscope,
+};
+
+const renderCategoryIcon = (iconId, className = "w-4 h-4") => {
+  const IconComponent = categoryIconMap[iconId];
+  if (IconComponent) {
+    return <IconComponent className={className} />;
+  }
+  return <Bookmark className={className} />;
+};
 
 const PaperDetailPage = () => {
   const { paperId } = useParams();
@@ -233,9 +250,9 @@ const PaperDetailPage = () => {
                         <button
                           key={category.id}
                           onClick={() => handleBookmark(category.id)}
-                          className="w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors flex items-center space-x-2"
+                          className="w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors flex items-center space-x-3"
                         >
-                          <span>{category.icon}</span>
+                          {renderCategoryIcon(category.icon, "w-4 h-4 text-gray-500")}
                           <span className="text-sm font-medium text-gray-700">{category.name}</span>
                         </button>
                       ))}
@@ -295,7 +312,7 @@ const PaperDetailPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="card bg-gradient-to-br from-primary-50 to-purple-50 border border-primary-100"
+                className="card bg-gradient-to-br from-primary-50 to-teal-50 border border-primary-100"
               >
                 <h2 className="text-xl font-bold mb-4 flex items-center text-primary-900">
                   <Sparkles className="w-5 h-5 mr-2 text-primary-600" />
@@ -346,7 +363,7 @@ const PaperDetailPage = () => {
 
                   {paper.analysis.key_contributions && paper.analysis.key_contributions.length > 0 && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><Target className="w-4 h-4 mr-2 text-purple-600" />Key Contributions</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center"><Target className="w-4 h-4 mr-2 text-teal-600" />Key Contributions</h3>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {paper.analysis.key_contributions.map((contribution, idx) => (
                           <li key={idx}>{contribution}</li>
@@ -476,7 +493,7 @@ const PaperDetailPage = () => {
                         <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                           message.role === 'user' 
                             ? 'bg-primary-600' 
-                            : 'bg-gradient-to-br from-purple-500 to-pink-500'
+                            : 'bg-gradient-to-br from-teal-500 to-cyan-500'
                         }`}>
                           {message.role === 'user' ? (
                             <UserIcon className="w-5 h-5 text-white" />
@@ -504,7 +521,7 @@ const PaperDetailPage = () => {
                     animate={{ opacity: 1 }}
                     className="flex items-start space-x-2"
                   >
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center">
                       <Bot className="w-5 h-5 text-white" />
                     </div>
                     <div className="bg-gray-100 px-4 py-3 rounded-2xl">

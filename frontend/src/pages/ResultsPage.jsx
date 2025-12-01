@@ -82,7 +82,7 @@ const ResultsPage = () => {
     const colors = {
       arxiv: 'bg-blue-100 text-blue-700 border-blue-300',
       pubmed: 'bg-green-100 text-green-700 border-green-300',
-      google_scholar: 'bg-purple-100 text-purple-700 border-purple-300',
+      google_scholar: 'bg-teal-100 text-teal-700 border-teal-300',
       ieee: 'bg-yellow-100 text-yellow-700 border-yellow-300',
     };
     return colors[source] || 'bg-gray-100 text-gray-700 border-gray-300';
@@ -110,10 +110,10 @@ const ResultsPage = () => {
           className="text-center"
         >
           <div className="relative mb-8">
-            <div className="w-24 h-24 bg-gradient-to-r from-primary-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-24 h-24 bg-gradient-to-r from-primary-500 to-teal-600 rounded-full flex items-center justify-center mx-auto">
               <Loader2 className="w-12 h-12 text-white animate-spin" />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-purple-600 rounded-full blur-xl opacity-30 animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-teal-600 rounded-full blur-xl opacity-30 animate-pulse"></div>
           </div>
           <h2 className="text-3xl font-bold mb-4 text-gray-900">Searching Papers...</h2>
           <p className="text-gray-600 mb-6">This may take a few moments</p>

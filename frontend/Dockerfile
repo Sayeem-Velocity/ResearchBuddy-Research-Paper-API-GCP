@@ -9,8 +9,11 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production=false
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci
+
+# Install terser for production build
+RUN npm install terser --save-dev
 
 # Copy source code
 COPY . .
