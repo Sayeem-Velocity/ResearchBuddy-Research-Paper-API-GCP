@@ -222,7 +222,7 @@ const BookmarksPage = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all border border-gray-100 overflow-hidden"
+                    className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all border border-gray-100"
                   >
                     <div className="p-6">
                       <div className="flex items-start justify-between gap-4">
@@ -298,12 +298,12 @@ const BookmarksPage = () => {
                           ) : null}
 
                           {/* Category Selector */}
-                          <div className="flex items-center gap-2 mb-4">
+                          <div className="flex items-center gap-2 mb-4 relative z-10">
                             <span className="text-sm text-gray-600">Category:</span>
                             <div className="relative">
                               <button
                                 onClick={() => setOpenCategoryDropdown(openCategoryDropdown === bookmark.id ? null : bookmark.id)}
-                                className="flex items-center gap-2 text-sm border border-gray-300 rounded-lg px-3 py-1.5 hover:bg-gray-50 focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white min-w-[160px]"
+                                className="flex items-center gap-2 text-sm border border-gray-300 rounded-lg px-3 py-1.5 hover:bg-gray-50 focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white min-w-[180px]"
                               >
                                 {renderCategoryIcon(categories.find(c => c.id === bookmark.categoryId)?.icon, "w-4 h-4 text-gray-600")}
                                 <span className="flex-1 text-left">{categories.find(c => c.id === bookmark.categoryId)?.name}</span>
@@ -316,7 +316,7 @@ const BookmarksPage = () => {
                                     initial={{ opacity: 0, y: -5 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -5 }}
-                                    className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-50"
+                                    className="absolute top-full left-0 mt-1 w-52 bg-white rounded-lg shadow-2xl border border-gray-200 py-1 z-[100]"
                                   >
                                     {categories.map((cat) => (
                                       <button
@@ -325,7 +325,7 @@ const BookmarksPage = () => {
                                           handleMoveBookmark(bookmark.id, cat.id);
                                           setOpenCategoryDropdown(null);
                                         }}
-                                        className={`w-full px-3 py-2 text-left hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm ${
+                                        className={`w-full px-3 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-center gap-3 text-sm ${
                                           bookmark.categoryId === cat.id ? 'bg-primary-50 text-primary-700' : 'text-gray-700'
                                         }`}
                                       >
