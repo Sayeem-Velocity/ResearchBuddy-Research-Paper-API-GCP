@@ -38,6 +38,7 @@ const BookmarksPage = () => {
   const [newCategoryIcon, setNewCategoryIcon] = useState('tag');
   const [editingNotes, setEditingNotes] = useState(null);
   const [notesText, setNotesText] = useState('');
+  const [openCategoryDropdown, setOpenCategoryDropdown] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -299,17 +300,43 @@ const BookmarksPage = () => {
                           {/* Category Selector */}
                           <div className="flex items-center gap-2 mb-4">
                             <span className="text-sm text-gray-600">Category:</span>
-                            <select
-                              value={bookmark.categoryId}
-                              onChange={(e) => handleMoveBookmark(bookmark.id, e.target.value)}
-                              className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                            >
-                              {categories.map((cat) => (
-                                <option key={cat.id} value={cat.id}>
-                                  {cat.icon} {cat.name}
-                                </option>
-                              ))}
-                            </select>
+                            <div className="relative">
+                              <button
+                                onClick={() => setOpenCategoryDropdown(openCategoryDropdown === bookmark.id ? null : bookmark.id)}
+                                className="flex items-center gap-2 text-sm border border-gray-300 rounded-lg px-3 py-1.5 hover:bg-gray-50 focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white min-w-[160px]"
+                              >
+                                {renderCategoryIcon(categories.find(c => c.id === bookmark.categoryId)?.icon, "w-4 h-4 text-gray-600")}
+                                <span className="flex-1 text-left">{categories.find(c => c.id === bookmark.categoryId)?.name}</span>
+                                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${openCategoryDropdown === bookmark.id ? 'rotate-180' : ''}`} />
+                              </button>
+                              
+                              <AnimatePresence>
+                                {openCategoryDropdown === bookmark.id && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -5 }}
+                                    className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-50"
+                                  >
+                                    {categories.map((cat) => (
+                                      <button
+                                        key={cat.id}
+                                        onClick={() => {
+                                          handleMoveBookmark(bookmark.id, cat.id);
+                                          setOpenCategoryDropdown(null);
+                                        }}
+                                        className={`w-full px-3 py-2 text-left hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm ${
+                                          bookmark.categoryId === cat.id ? 'bg-primary-50 text-primary-700' : 'text-gray-700'
+                                        }`}
+                                      >
+                                        {renderCategoryIcon(cat.icon, "w-4 h-4")}
+                                        <span>{cat.name}</span>
+                                      </button>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
                           </div>
 
                           {/* Actions */}
