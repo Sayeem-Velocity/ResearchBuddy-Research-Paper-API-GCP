@@ -9,16 +9,31 @@ from typing import List, Optional, Dict
 from datetime import datetime
 
 from app.core.mock_dependencies import get_mock_current_user, get_mock_firestore_db
+from app.core.config import settings
 from app.models.chat import ChatRequest, ChatResponse, ChatMessage, MessageRole, ChatHistory
 from app.models.paper import Paper
-from app.services.llm.mock_vertex_ai import MockVertexAIService
-from app.services.storage.mock_firestore_manager import MockFirestoreSessionManager
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# Initialize services
-vertex_ai_service = MockVertexAIService()
+# Initialize the appropriate AI service based on configuration
+def get_vertex_ai_service():
+    """Get the appropriate Vertex AI service based on API key availability"""
+    if settings.vertex_ai_api_key:
+        try:
+            from app.services.llm.vertex_ai import VertexAIService
+            logger.info("Using real VertexAIService with Gemini 1.5 Flash")
+            return VertexAIService()
+        except Exception as e:
+            logger.warning(f"Failed to initialize VertexAIService: {e}, falling back to mock")
+    
+    from app.services.llm.mock_vertex_ai import MockVertexAIService
+    logger.info("Using MockVertexAIService")
+    return MockVertexAIService()
+
+vertex_ai_service = get_vertex_ai_service()
+
+from app.services.storage.mock_firestore_manager import MockFirestoreSessionManager
 _mock_session_manager = MockFirestoreSessionManager()
 
 # Chat history storage

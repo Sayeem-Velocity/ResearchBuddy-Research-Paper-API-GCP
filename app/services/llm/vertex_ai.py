@@ -28,16 +28,187 @@ class VertexAIService:
         # Initialize the new GenAI client
         try:
             self.client = genai.Client(
-                vertexai=True,
                 api_key=self.api_key,
             )
-            logger.info(f"GenAI client initialized for project {self.project_id} in {self.location}")
+            logger.info(f"GenAI client initialized for project {self.project_id}")
         except Exception as e:
             logger.error(f"Failed to initialize GenAI client: {e}")
             raise
 
-        # Use the latest available model
-        self.model_name = "gemini-2.0-flash-exp"
+        # Use Gemini 2.0 Flash - latest and best free model
+        self.model_name = "gemini-2.0-flash"
+        self.chat_model = "gemini-2.0-flash"
+
+    async def chat_with_paper(
+        self,
+        message: str,
+        paper: Paper,
+        chat_history: List[Dict[str, str]] = None
+    ) -> str:
+        """
+        Chat about a specific paper with full context awareness.
+        Generates unique, relevant responses for each question.
+        """
+        try:
+            # Build conversation history for context
+            conversation_context = ""
+            if chat_history and len(chat_history) > 0:
+                # Include last 6 messages for context (3 exchanges)
+                recent_history = chat_history[-6:] if len(chat_history) > 6 else chat_history
+                for msg in recent_history:
+                    role = "User" if msg.get("role") == "user" else "Assistant"
+                    conversation_context += f"{role}: {msg.get('content', '')}\n"
+
+            # Create a detailed system prompt with paper context
+            system_prompt = f"""You are an expert research assistant analyzing the following academic paper. 
+Provide detailed, accurate, and helpful responses based on the paper's content.
+
+=== PAPER DETAILS ===
+Title: {paper.title}
+Authors: {', '.join(paper.authors) if paper.authors else 'Not specified'}
+Published: {paper.published or 'Date not available'}
+Source: {paper.source or 'Source not specified'}
+Venue: {paper.venue or 'Not specified'}
+
+Abstract:
+{paper.abstract or 'No abstract available'}
+
+=== INSTRUCTIONS ===
+1. Base your answers primarily on the paper's content (title, abstract, authors, publication info)
+2. Provide specific, detailed responses - not generic answers
+3. If asked about methodology, findings, or contributions - analyze from the abstract
+4. Use proper academic language and structure your responses clearly
+5. If information isn't available in the paper, say so honestly
+6. Make responses informative and well-organized with bullet points or numbered lists when appropriate
+7. Each response should be unique and directly address the user's specific question
+8. Vary your response length based on the complexity of the question (minimum 100 words for substantive questions)
+"""
+
+            # Build the user prompt with context
+            user_prompt = message
+            if conversation_context:
+                user_prompt = f"""Previous conversation:
+{conversation_context}
+
+Current question: {message}
+
+Please provide a detailed and specific response to the current question, considering the conversation history."""
+
+            contents = [
+                types.Content(
+                    role="user",
+                    parts=[types.Part(text=f"{system_prompt}\n\n{user_prompt}")]
+                )
+            ]
+
+            config = types.GenerateContentConfig(
+                temperature=0.7,  # Higher temperature for more varied responses
+                top_p=0.9,
+                top_k=40,
+                max_output_tokens=2048,
+                safety_settings=[
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH",
+                        threshold="BLOCK_NONE"
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                        threshold="BLOCK_NONE"
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                        threshold="BLOCK_NONE"
+                    ),
+                    types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT",
+                        threshold="BLOCK_NONE"
+                    )
+                ]
+            )
+
+            # Make the API call
+            response = self.client.models.generate_content(
+                model=self.chat_model,
+                contents=contents,
+                config=config
+            )
+
+            if response and response.text:
+                return response.text.strip()
+            else:
+                return "I apologize, but I couldn't generate a response. Please try rephrasing your question."
+
+        except Exception as e:
+            logger.error(f"Error in chat_with_paper: {e}")
+            return f"I encountered an error while processing your question: {str(e)}. Please try again."
+
+    async def chat_with_papers(
+        self,
+        message: str,
+        papers_context: List[Paper],
+        chat_history: List[Dict[str, str]] = None
+    ) -> str:
+        """
+        Chat about multiple papers with context awareness.
+        """
+        try:
+            if not papers_context:
+                return "I don't have any papers in context to discuss. Please provide some papers first."
+
+            if len(papers_context) == 1:
+                return await self.chat_with_paper(message, papers_context[0], chat_history)
+
+            # Build papers context summary
+            papers_summary = ""
+            for i, paper in enumerate(papers_context[:5], 1):  # Limit to 5 papers
+                papers_summary += f"""
+Paper {i}: {paper.title}
+Authors: {', '.join(paper.authors[:3]) if paper.authors else 'N/A'}{'...' if paper.authors and len(paper.authors) > 3 else ''}
+Abstract: {paper.abstract[:300] if paper.abstract else 'N/A'}...
+---
+"""
+
+            system_prompt = f"""You are an expert research assistant analyzing multiple academic papers.
+Provide comparative analysis and insights based on the papers' content.
+
+=== PAPERS IN CONTEXT ===
+{papers_summary}
+
+=== INSTRUCTIONS ===
+1. Analyze and compare the papers when relevant
+2. Provide specific insights from each paper
+3. Identify common themes, differences, and connections
+4. Give detailed, well-structured responses
+5. Use the paper titles and content for specific references
+"""
+
+            contents = [
+                types.Content(
+                    role="user",
+                    parts=[types.Part(text=f"{system_prompt}\n\nQuestion: {message}")]
+                )
+            ]
+
+            config = types.GenerateContentConfig(
+                temperature=0.7,
+                top_p=0.9,
+                max_output_tokens=2048
+            )
+
+            response = self.client.models.generate_content(
+                model=self.chat_model,
+                contents=contents,
+                config=config
+            )
+
+            if response and response.text:
+                return response.text.strip()
+            else:
+                return "I apologize, but I couldn't generate a response. Please try again."
+
+        except Exception as e:
+            logger.error(f"Error in chat_with_papers: {e}")
+            return f"I encountered an error: {str(e)}. Please try again."
 
     async def analyze_paper(self, paper: Paper) -> PaperAnalysis:
         """
