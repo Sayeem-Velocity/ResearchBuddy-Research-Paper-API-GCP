@@ -35,7 +35,7 @@ class VertexAIService:
             logger.error(f"Failed to initialize GenAI client: {e}")
             raise
 
-        # Use Gemini 2.0 Flash Experimental - previous working model
+        # Use Gemini 2.0 Flash Experimental
         self.model_name = "gemini-2.0-flash-exp"
         self.chat_model = "gemini-2.0-flash-exp"
 
