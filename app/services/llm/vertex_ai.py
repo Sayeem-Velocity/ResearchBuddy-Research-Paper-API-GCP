@@ -35,9 +35,9 @@ class VertexAIService:
             logger.error(f"Failed to initialize GenAI client: {e}")
             raise
 
-        # Use Gemini 2.0 Flash - latest and best free model
-        self.model_name = "gemini-2.0-flash"
-        self.chat_model = "gemini-2.0-flash"
+        # Use Gemini 2.0 Flash Experimental - previous working model
+        self.model_name = "gemini-2.0-flash-exp"
+        self.chat_model = "gemini-2.0-flash-exp"
 
     async def chat_with_paper(
         self,
@@ -60,28 +60,28 @@ class VertexAIService:
                     conversation_context += f"{role}: {msg.get('content', '')}\n"
 
             # Create a detailed system prompt with paper context
-            system_prompt = f"""You are an expert research assistant analyzing the following academic paper. 
-Provide detailed, accurate, and helpful responses based on the paper's content.
+            system_prompt = f"""You are an expert AI research assistant. Your task is to answer questions about the following research paper accurately and helpfully.
 
-=== PAPER DETAILS ===
-Title: {paper.title}
-Authors: {', '.join(paper.authors) if paper.authors else 'Not specified'}
-Published: {paper.published or 'Date not available'}
-Source: {paper.source or 'Source not specified'}
-Venue: {paper.venue or 'Not specified'}
+**PAPER INFORMATION:**
+- **Title:** {paper.title}
+- **Authors:** {', '.join(paper.authors) if paper.authors else 'Not specified'}
+- **Published:** {paper.published or 'Date not available'}
+- **Source:** {paper.source or 'Source not specified'}
+- **Venue/Journal:** {paper.venue or 'Not specified'}
 
-Abstract:
+**ABSTRACT:**
 {paper.abstract or 'No abstract available'}
 
-=== INSTRUCTIONS ===
-1. Base your answers primarily on the paper's content (title, abstract, authors, publication info)
-2. Provide specific, detailed responses - not generic answers
-3. If asked about methodology, findings, or contributions - analyze from the abstract
-4. Use proper academic language and structure your responses clearly
-5. If information isn't available in the paper, say so honestly
-6. Make responses informative and well-organized with bullet points or numbered lists when appropriate
-7. Each response should be unique and directly address the user's specific question
-8. Vary your response length based on the complexity of the question (minimum 100 words for substantive questions)
+**RESPONSE GUIDELINES:**
+1. Answer the user's question directly and specifically - do not give generic responses
+2. Extract and cite relevant information from the paper's title and abstract
+3. Structure your response clearly with paragraphs, bullet points, or numbered lists as appropriate
+4. If the question asks about methodology, findings, or contributions - analyze what the abstract reveals
+5. If specific information is not available in the provided paper details, clearly state that
+6. Use academic language but keep explanations accessible
+7. Provide substantive responses (150-400 words for detailed questions)
+8. Do NOT repeat the same response for different questions - each answer must be unique and relevant
+9. For follow-up questions, build upon previous context while addressing the new question specifically
 """
 
             # Build the user prompt with context
