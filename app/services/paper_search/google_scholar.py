@@ -9,6 +9,8 @@ import json
 from app.core.config import settings
 from app.models.paper import Paper, PaperSource
 
+logger = logging.getLogger(__name__)
+
 # Import SERP API
 try:
     from serpapi import GoogleSearch
@@ -16,8 +18,6 @@ try:
 except ImportError:
     SERPAPI_AVAILABLE = False
     logger.warning("SERP API client not installed. Google Scholar will use mock results.")
-
-logger = logging.getLogger(__name__)
 
 class GoogleScholarSearcher:
     """Google Scholar search with per-user daily rate limiting"""
